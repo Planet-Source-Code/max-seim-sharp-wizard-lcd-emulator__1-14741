@@ -1,0 +1,138 @@
+10 ' Wizard LCD Emulator
+11' By: Max Seim
+12 ' Rev: 01/24/01
+13 '
+15 ' This is an example of how you can
+16 ' use this VB program to help figure
+17 ' out where TEXT and GRAPHICS will
+18 ' appear on the Sharp Wizard OZxx Screen.
+19 ' This is what a typical BASIC program looks like.
+    
+     You can use your Basic SDK software to write your
+     Wizard program.  Select the part(s) of your program
+     you wish to see ... select, cut, copy
+
+     Then, go to this program and PASTE the text into
+     this text box and click the COMMAND buttons above
+     to see where various text and graphics will be placed.
+
+     You can also just type the commands into this box
+     manually  (use CAPITAL letters!). 
+
+     Use this program to just get an idea of where the
+     PSETs, LOCATEs, and LINEs appear on the LCD display.
+
+     Send questions and comments to:  Max Seim  mlseim@mmm.com
+
+20 CLS
+22 LOCATE 0,0
+24 PRINT "By clicking one of the 3 command"
+25 PRINT "buttons, the program will search"
+26 PRINT "the program lines and display the"
+30 PRINT "location of the COMMAND and show it"
+32 PRINT "graphically on the LCD emulator."
+43 CLS
+45 LOCATE 0,1
+46 PRINT "Click the LOCATE button to jump"
+47 PRINT "through all the LOCATE commands."
+48 LINE (0,10)-(230,10)
+50 LOCATE 10,4
+52 PRINT "Clicking LINE, will jump through"
+53 PRINT "the LINE commands."
+54 LOCATE 0,5
+56 PRINT "And the same with PSET."
+57 PSET 10,10
+58 PRINT " "
+59 LOCATE 80,4
+60 PRINT "So, click the buttons and see"
+61 PSET 230,60
+62 PRINT "where the graphics appear."
+70 A$=INKEY$(1)
+74 IF A$="" THEN 70
+75 CLS
+76 IF A$ = "X" THEN 999
+77 IF A$ = "x" THEN 999
+80 IF A$ = "3" THEN 400
+82 IF A$ = "2" THEN 300
+84 IF A$ = "1" THEN 200
+90 GOTO 50
+
+100 ' ENTERING VALUES
+101 LOCATE 0,0
+102 INPUT "There is one problem though ...."
+105 PRINT "It can only parse the PURE commands."
+106 PRINT "It won't figure out the commands using variables."
+110 IF C < 0 THEN 101
+112 IF C > 5 THEN 101
+180 RETURN
+
+200 ' PERCENT
+205 GOSUB 100
+212 LOCATE 0,1
+213 FOR L=1 TO C
+214 PRINT "What is the percent (value #";L;"): ";
+215 INPUT VP(L)
+250 VE(L) = ((VP(L) / 100) * (ES - EZ) + EZ)
+260 VM(L) = ((VP(L) / 100) * (20 - 4) + 4)
+280 NEXT L
+290 GOTO 500
+
+300 ' MILLIAMPS
+301 GOSUB 100
+302 LOCATE 0,1
+303 FOR L=1 TO C
+304 PRINT "What is the milliamps (value #";L;"): ";
+310 INPUT VM(L)
+350 M=(20-4)/(ES-EZ)
+362 B=4-(M*EZ)
+370 VE(L) = (VM(L)-B)/M
+380 VP(L) = ((VE(L) - (EZ)) / (ES - (EZ))) * 100
+385 NEXT L
+390 GOTO 500
+
+400 ' EGU VALUE
+401 GOSUB 100
+402 LOCATE 0,1
+403 FOR L=1 TO C
+404 PRINT "What is the value (value #";L;"): ";
+405 INPUT VE(L)
+406 IF VE(L) > ES THEN 404
+407 IF VE(L) < EZ THEN 404
+450 M=(20-4)/(ES-EZ)
+462 B=4-(M*EZ)
+470 VM(L) = (M*VE(L))+B
+480 VP(L) = ((VE(L) - (EZ)) / (ES - (EZ))) * 100
+490 NEXT L
+
+500 ' FINAL PRINTOUT
+505 CLS
+520 LOCATE 0,0
+522 PRINT "4ma =";EZ;"     20ma =";ES
+524 LINE (0,10)-(230,10)
+530 LOCATE 0,1
+535 PRINT "PERCENT"
+540 LOCATE 80,1
+545 PRINT "MILLIAMPS"
+550 LOCATE 160,1
+555 PRINT "VALUE"
+560 LINE (0,22)-(230,22)
+
+600 ' These lines, with variables, cannot be deciphered.
+602 FOR X=1 TO C
+604 LOCATE 0,(X+1)
+606 PRINT VP(X)
+608 LOCATE 80,(X+1)
+610 PRINT VM(X)
+612 LOCATE 160,(X+1)
+614 PRINT VE(X)
+620 NEXT X
+
+700 A$=INKEY$(1)
+710 IF A$="" THEN 700
+720 GOTO 43
+
+800 PSET 60,30
+803 PSET 62,30
+804 PSET 64,30
+
+999 END
